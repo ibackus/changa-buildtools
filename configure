@@ -32,6 +32,8 @@ then
     
     echo "Compile time flags: "
     $DIR/get_define_flags.py
+    echo "Charm directory (saved to config.charmdir): " $CHARM_DIR
+    echo $CHARM_DIR > $cwd/config.charmdir
     
 fi
 
