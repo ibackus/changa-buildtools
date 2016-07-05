@@ -9,7 +9,12 @@ cwd=`pwd`
 # Directory of the script
 DIR="$(dirname "$(readlink -f "$0")")"
 # Set up the charm directory
-export CHARM_DIR=`egrep -v '(^#|^\s*$|^\s*\t*#)' $DIR/charmdir | xargs`
+if [ -e $cwd/config.charmdir ] ; then
+    charmdirfile=$cwd/config.charmdir
+else
+    charmdirfile=$DIR/charmdir
+fi
+export CHARM_DIR=`egrep -v '(^#|^\s*$|^\s*\t*#)' $charmdirfile | xargs`
 # run configure and pass all command-line arguments to it
 $cwd/configure "$@"
 # parse the generated Makefile and place all compile-time #defines into 
@@ -32,7 +37,7 @@ then
     
     echo "Compile time flags: "
     $DIR/get_define_flags.py
-    echo "Charm directory (saved to config.charmdir): " $CHARM_DIR
+    echo "Charm directory (defined in config.charmdir): " $CHARM_DIR
     echo $CHARM_DIR > $cwd/config.charmdir
     
 fi
