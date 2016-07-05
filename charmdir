@@ -1,0 +1,7 @@
+# To point the ChaNGa configure script to charm, uncomment the charm directory
+# Only uncomment one line
+# Lines beginning with # are comments
+
+#/home/ibackus/charm
+$HOME/charm
+#$HOME/charm-cuda

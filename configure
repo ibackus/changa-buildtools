@@ -1,0 +1,37 @@
+#!/bin/bash
+# Run this script from the ChaNGa directory to run the normal ChaNGa 
+# configure script and echo the compile-time flags to ChaNGa.config
+# The CHARM_DIR environmental variable is set in the charmdir file
+#
+# This script is a simple wrapper around configure
+#
+cwd=`pwd`
+# Directory of the script
+DIR="$(dirname "$(readlink -f "$0")")"
+# Set up the charm directory
+export CHARM_DIR=`egrep -v '(^#|^\s*$|^\s*\t*#)' $DIR/charmdir | xargs`
+# run configure and pass all command-line arguments to it
+$cwd/configure "$@"
+# parse the generated Makefile and place all compile-time #defines into 
+# ChaNGa.config for IDE to parse
+return_code=$?
+
+# Check to see if one of the args passed to configure was --help
+helpflag=0
+for arg in "$@"
+do
+    if [ "${arg:-no}" == "--help" ] ; then
+        helpflag=1
+    fi
+done
+
+# IF configure completed successfully AND we didn't pass it --help, THEN 
+# parse the compile-time flags and save them to ChaNGa.config
+if [ "$return_code" == "0" ] && [ $helpflag -eq 0 ]
+then
+    
+    echo "Compile time flags: "
+    $DIR/get_define_flags.py
+    
+fi
+
