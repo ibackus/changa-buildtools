@@ -32,6 +32,7 @@ done
 
 # IF configure completed successfully AND we didn't pass it --help, THEN 
 # parse the compile-time flags and save them to ChaNGa.config
+# Also save the build commands that were used
 if [ "$return_code" == "0" ] && [ $helpflag -eq 0 ]
 then
     
@@ -39,6 +40,7 @@ then
     $DIR/get_define_flags.py
     echo "Charm directory (defined in config.charmdir): " $CHARM_DIR
     echo $CHARM_DIR > $cwd/config.charmdir
-    
+    echo "configure arguments: $@" | tee $cwd/config.args
+    echo "Saved configure arguments to config.args"
 fi
 
