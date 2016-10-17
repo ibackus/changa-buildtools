@@ -25,12 +25,40 @@ def makeConfig(configname, makefile, verbose=True):
             
             print macroText
 
+def preprocess(text):
+    """
+    Removes comments ('#') and handles continue line characters for makefile 
+    text
+    """
+    lines = []
+    previousLine = ''
+    for line in text:
+        
+        # Join previous line (blank if there was no continue line)
+        line = previousLine + line
+        # ignore comments
+        line = line.split('#')[0]
+        # strip
+        line = line.strip()
+        if len(line) > 0:
+            if line[-1] == '\\':
+                previousLine = line[0:-1]
+            else:
+                previousLine = ''
+                lines.append(line)
+        else:
+            previousLine = ''
+    
+    return lines
+        
+
 def parseMakefile(makefile='Makefile'):
     
     with open(makefile, 'r') as f:
         
         makefileText = f.readlines()
         
+    makefileText = preprocess(makefileText)
     define_flags = findDefinition('DEFINE_FLAGS', makefileText)
     define_flags = replaceVariables(define_flags, makefileText)
     macros, values = getMacroDefs(define_flags)
@@ -45,8 +73,6 @@ def findDefinition(variable, text):
     
     for i, line in enumerate(text):
         
-        line = line.split('#')[0]
-        line = line.strip()
         l2 = line.replace(' ','')
         if l2[0:len(searchString)] == searchString:
             
