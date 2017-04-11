@@ -8,6 +8,7 @@
 cwd=`pwd`
 # Directory of the script
 DIR="$(dirname "$(readlink -f "$0")")"
+scriptpath=$DIR/configure
 # Set up the charm directory
 if [ -e $cwd/config.charmdir ] ; then
     charmdirfile=$cwd/config.charmdir
@@ -40,7 +41,13 @@ then
     $DIR/get_define_flags.py
     echo "Charm directory (defined in config.charmdir): " $CHARM_DIR
     echo $CHARM_DIR > $cwd/config.charmdir
-    echo "configure arguments: $@" | tee $cwd/config.args
-    echo "Saved configure arguments to config.args"
+    config=$cwd/config.sh
+    echo "#!/bin/bash" > $config
+    echo "# Re-run the most recent configure command by executing this script" >> $config
+    echo "$scriptpath $@" >> $config
+    echo "" >> $config
+    chmod a+x $cwd/config.sh
+    echo "Saved configure command to config.sh.  You can re-run the configure "\
+    "command by executing config.sh"
 fi
 
