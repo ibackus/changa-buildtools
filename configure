@@ -15,9 +15,9 @@ if [ -e "$cwd/config.charmdir" ]; then
 elif [ -e "$DIR/charmdir" ]; then
     charmdirfile=$DIR/charmdir
 fi
-if [ -z "$charmdirfile" ]; then
+if [ -e "$charmdirfile" ]; then
     export CHARM_DIR=`egrep -v '(^#|^\s*$|^\s*\t*#)' $charmdirfile | xargs`
-elif [ -z "$CHARM_DIR" ]; then
+elif [ ! -z "$CHARM_DIR" ]; then
     echo "Using already defined variable CHARM_DIR"
 fi
 # run configure and pass all command-line arguments to it
